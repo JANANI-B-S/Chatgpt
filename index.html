@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Estate Chatbot</title>
+  <script src="https://cdn.jsdelivr.net/npm/@gradio/core/dist/gradio.full.es.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gradio/core/dist/gradio.min.css">
+</head>
+<body>
+  <div id="gradio-interface"></div>
+  <script>
+    const iface = gradio.Interface.custom(
+      (user_input) => {return {"output": CustomChatGPT(user_input)}},
+      gradio.inputs.text(),
+      gradio.outputs.text(),
+      {title: "Real Estate Pro"}
+    );
+    iface.mount(document.getElementById('gradio-interface'));
+  </script>
+</body>
+</html>
