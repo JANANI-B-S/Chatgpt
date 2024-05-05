@@ -1,20 +1,38 @@
+from flask import Flask, render_template, request
 import openai
-import gradio
 
-openai.api_key = "sk-proj-y34vDuAd4ZsWbtPFEBqAT3BlbkFJo7fA1xQFEM6irWVxTciq"
 
-messages = [{"role": "system", "content": "You are a financial experts that specializes in real estate investment and negotiation"}]
+app = Flask(__name__)
 
-def CustomChatGPT(user_input):
-    messages.append({"role": "user", "content": user_input})
-    response = openai.ChatCompletion.create(
-        model = "gpt-3.5-turbo",
-        messages = messages
+# Set up OpenAI API credentials
+openai.api_key = 'sk-proj-y34vDuAd4ZsWbtPFEBqAT3BlbkFJo7fA1xQFEM6irWVxTciq'
+
+# Define the default route to return the index.html file
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+# Define the /api route to handle POST requests
+@app.route("/api", methods=["POST"])
+def api():
+    # Get the message from the POST request
+    message = request.json.get("message")
+    # Send the message to OpenAI's API and receive the response
+    
+    
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": message}
+    ]
     )
-    ChatGPT_reply = response["choices"][0]["message"]["content"]
-    messages.append({"role": "assistant", "content": ChatGPT_reply})
-    return ChatGPT_reply
+    if completion.choices[0].message!=None:
+        return completion.choices[0].message
 
-demo = gradio.Interface(fn=CustomChatGPT, inputs = "text", outputs = "text", title = "Real Estate Pro")
+    else :
+        return 'Failed to Generate response!'
+    
 
-demo.launch(share=True)
+if __name__=='__main__':
+    app.run()
+    
